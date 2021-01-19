@@ -103,17 +103,17 @@ router.put("/update", function(req, res) {
       } else {
         db.collection("users")
           .updateMany({
-            dni: dni,
-            foto: foto,
-            nombre: nombre,
-            apellido: apellido,
-            tfno: tfno,
-            email: email,
-            fechaAlta: fechaAlta,
-            fechaBaja: fechaBaja,
-            creditos: creditos,
-            password: password,
-            administrador: administrador
+            dni: reserva.dni,
+            foto: reserva.foto,
+            nombre: reserva.nombre,
+            apellido: reserva.apellido,
+            tfno: reserva.tfno,
+            email: reserva.email,
+            fechaAlta: reserva.fechaAlta,
+            fechaBaja: reserva.fechaBaja,
+            creditos: reserva.creditos,
+            password: reserva.password,
+            administrador: reserva.administrador
           }, function (err, datos) {
               if (err != null) {
                 res.send(err);
@@ -133,8 +133,10 @@ router.put("/update", function(req, res) {
 /******************************************/
 
 router.post("/login", function (req,res) {
-    let email = req.body.tfno;
-    let password = req.body.password;
+   let email = req.body.tfno;
+  let password = req.body.password;
+  let administrador = req.body.administrador;
+ 
 
     let db = req.app.locals.db;
   db.collection("users")
@@ -145,7 +147,7 @@ router.post("/login", function (req,res) {
       } else {
         if (arrayUsuario.length > 0) { 
           if (bcrypt.compareSync(password,arrayUsuario[0].password)) {
-            res.send({ error:false , mensaje: "Logueado correctamente" , usuario: arrayUsuario});
+            res.send({ error:false , mensaje: "Logueado correctamente" , usuario: arrayUsuario, administrador:administrador });
 
           } else {
             res.send({ error:true, mensaje: "Contraseña incorrecta" });

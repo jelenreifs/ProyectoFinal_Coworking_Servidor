@@ -27,7 +27,7 @@ router.post("/add", (req, res) => {
                             apellido: reserva.apellido,
                             puesto: reserva.id,
                             fecha: fecha
-                        }, ((err, datos) => { 
+                        }, ((err, data) => { 
                                 if (err != null) {
                                     res.send(err);
                                 } else {
@@ -43,7 +43,7 @@ router.post("/add", (req, res) => {
                                                         if (err != null) {
                                                             res.send(err);
                                                         } else {
-                                                            res.send({ error: true, mensaje: "Su puesto se ha reservado" });
+                                                            res.send({ error: true, mensaje: "Su puesto se ha reservado", alta:alta });
                                                         }
                                                     }
                                                 )
@@ -88,7 +88,7 @@ router.post("/add", (req, res) => {
         let db = req.app.locals.db;
         db.collection("reservaPuesto")
             .find({ fecha: fecha })
-                .toArray((err, dia) => {
+                .toArray((err, datos) => {
                 if(err!=null) {
                     console.log(err);
                     res.send(err);
