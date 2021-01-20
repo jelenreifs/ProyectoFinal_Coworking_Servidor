@@ -146,8 +146,9 @@ router.post("/login", function (req,res) {
         res.send({ error:true, mensaje: "Ha habido un error" });
       } else {
         if (arrayUsuario.length > 0) { 
-          if (bcrypt.compareSync(password,arrayUsuario[0].password)) {
-            res.send({ error:false , mensaje: "Logueado correctamente" , usuario: arrayUsuario, administrador:administrador });
+          if (bcrypt.compareSync(password, arrayUsuario[0].password)) {
+            const usuario = { nombre: arrayUsuario[0].nombre, administrador: arrayUsuario[0].administrador  }
+            res.send({ error:false , mensaje: "Logueado correctamente" , usuario: usuario });
 
           } else {
             res.send({ error:true, mensaje: "Contraseña incorrecta" });

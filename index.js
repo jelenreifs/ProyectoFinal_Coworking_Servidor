@@ -71,6 +71,7 @@ passport.use(
             done(null, false);
           }
           const user = users[0];
+          console.log(user)
           if (bcrypt.compareSync(password,user.password)) {
             return done(null, user);
           } else {
@@ -116,7 +117,7 @@ app.get("/api", function (req, res) {
   if (req.isAuthenticated() === false) {
     return res.status(401).send({ mensaje: "necesitas loguearte" });
   }
-  res.send({ mensaje: "logueado correctamente" });
+  res.send( {error:false , mensaje: "Logueado correctamente" , usuario: req.user });
 });
 
 
@@ -126,8 +127,6 @@ app.get("/api/user", function (req, res) {
   }
   res.send({ nombre: "No logueado" });
 });
-
-
 
 
 
