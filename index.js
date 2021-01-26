@@ -123,12 +123,10 @@ app.get("/api", function (req, res) {
 
 app.get("/api/user", function (req, res) {
   if (req.isAuthenticated()) {
-    return res.send({ nombre: req.user.name });
+    return res.send({ usuario: req.user });
   }
-  res.send({ nombre: "No logueado" });
+  res.send({ suario: "No logueado" });
 });
-
-
 
 
 

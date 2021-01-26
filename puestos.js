@@ -2,6 +2,25 @@ const express = require("express");
 const router = express.Router()
 
 
+/*******************************************/
+/*              GET PUESTOS              */
+/******************************************/
+
+router.get("/", (req, res) => {
+  let db = req.app.locals.db;
+  db.collection("puestos")
+        .find()
+        .toArray((err, datos) => {
+        if(err!=null) {
+            res.send(err);
+        } else {
+            res.send(datos);
+        }
+    });
+}); 
+
+
+
 
 /*******************************************/
 /*         REGISTRO: POST PUESTOS         */

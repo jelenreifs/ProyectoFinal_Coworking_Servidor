@@ -64,100 +64,92 @@ router.post("/add", function(req, res) {
 })
 
 
+/*******************************************/
+/*          REGISTRO: UPDATE USER USER         */
+/******************************************/
+
+/* 
+router.put("/update", function (req, res) {
+  let dni = req.body.dni;
+  let foto = req.body.foto;
+
+    db.collection("users").updateOne(
+      { dni: dni },
+      { $set: { foto: foto } },
+      function (err, datos) {
+        if (err !== null) {
+          res.send(err);
+          } else {
+              res.send(datos);
+          }
+      });
+  });
+ */
+
 
 /*******************************************************/
-/*          CONFIGURACION: MODIFICACION USER           */
+/*                MODIFICACION USER               */
 /*******************************************************/
 
-router.put("/update", function(req, res) {
+router.put("/update", function (req, res) {
+    const usuario = req.body
+  
     let dni = req.body.dni;
     let foto = req.body.foto;
     let nombre = req.body.nombre;
     let apellido = req.body.apellido;
-    let tfno = req.body.tfno;
-    let email = req.body.email;
-    let fechaAlta = req.body.fechaAlta;
-    let fechaBaja = req.body.fechaBaja;
-    let creditos = req.body.creditos;
-    let password = bcrypt.hashSync( req.body.password, 10 );
-    let administrador = req.body.administrador;
+  let email = req.body.email;
+  let tfno = req.body.tfno;
+    let password = bcrypt.hashSync( req.body.password, 10 ); 
 
   
-    let db = req.app.locals.db;
+let db = req.app.locals.db;
+console.log(req.body)
   db.collection("users")
-    .find({
-      dni: dni,
-      foto: foto,
-      nombre: nombre,
-      apellido: apellido,
-      tfno: tfno,
-      email: email,
-      fechaAlta: fechaAlta,
-      fechaBaja: fechaBaja,
-      creditos: creditos,
-      password: password,
-      administrador: administrador
-    }).toArray((err, reserva) => {
-      if (err != null) {
-        res.send(err);
-      } else {
-        db.collection("users")
-          .updateMany({
-            dni: reserva.dni,
-            foto: reserva.foto,
-            nombre: reserva.nombre,
-            apellido: reserva.apellido,
-            tfno: reserva.tfno,
-            email: reserva.email,
-            fechaAlta: reserva.fechaAlta,
-            fechaBaja: reserva.fechaBaja,
-            creditos: reserva.creditos,
-            password: reserva.password,
-            administrador: reserva.administrador
-          }, function (err, datos) {
-              if (err != null) {
-                res.send(err);
-              } else { 
-                 res.send({ error:true, mensaje: "Los datos se han actualizado correctamente", datos:datos });
+    .updateOne(
+      {
+        email:email
+      }, { $set:
+              {
+                dni:dni,
+                foto:foto,
+                nombre:nombre,
+                apellido:apellido,
+                tfno:tfno,
+                password: password
               }
-           })
+      },function (err, datos) {
+        if (err != null) {
+            console.log("error")
+            res.send({error: true, mensaje: "Los datos no se han actualizado", err: err });
+
+        } else { 
+           console.log("sin error")
+            res.send({ error: false, mensaje: "Los datos se han actualizado correctamente", datos: datos });
+          
        }
-     })
+    }
+  );
+});
 
-})
 
 
+/*******************************************************/
+/*               ELIMINAR USUARIO              */
+/*******************************************************/
 
-/*******************************************/
-/*               LOGIN            */
-/******************************************/
-
-router.post("/login", function (req,res) {
-   let email = req.body.tfno;
-  let password = req.body.password;
-  let administrador = req.body.administrador;
- 
-
-    let db = req.app.locals.db;
-  db.collection("users")
-    .find({ email: email })
-    .toArray(function (err,arrayUsuario) {
-      if (err !== null) {
-        res.send({ error:true, mensaje: "Ha habido un error" });
-      } else {
-        if (arrayUsuario.length > 0) { 
-          if (bcrypt.compareSync(password, arrayUsuario[0].password)) {
-            const usuario = { nombre: arrayUsuario[0].nombre, administrador: arrayUsuario[0].administrador  }
-            res.send({ error:false , mensaje: "Logueado correctamente" , usuario: usuario });
-
-          } else {
-            res.send({ error:true, mensaje: "Contraseña incorrecta" });
-          }
-        } else {
-          res.send({  error:true, mensaje: "El usuario no existe" });
-        }
-      }
-    });
+router.delete("/delete/:dni", function (req, res) {
+    const dni = req.params.dni;
+    const usuario = req.body
+  
+   db.collection("users")
+    .deleteMany({ dni: dni }, function (err, datos) {
+    if (err !== null) {
+      res.send(err);
+    } else {
+      res.send({ error:true, mensaje: "El usuario se ha dado de baja", datos:datos });
+    }
+  });
 });
 
 
