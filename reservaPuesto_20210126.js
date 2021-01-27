@@ -32,53 +32,40 @@ router.post("/add", (req, res) => {
                                 if (reserva.estado === "ocupado") {
                                     res.send({ error: true, mensaje: "El puesto está ocupado" });
                                 } else { 
-                                    db.collection("users")
-                                        .find({ email: reserva.email }).toArray((err, usuario) => {
-                                            if (err != null) {
-                                                res.send(err)
-                                            } else { 
-                                                if (usuario[0].dni === reserva.dni) {
-                                                    res.send({ error: true, mensaje: "Usuario loqueado" });
+                                    db.collection("reservaPuesto")
+                                        .insertOne({
+                                            dni: reserva.dni,
+                                            nombre: reserva.nombre,
+                                            apellido: reserva.apellido,
+                                        //id: puesto[0].id,
+                                            id: reserva.id,
+                                            fecha: fecha
+                                        }, ((err, data) => { 
+                                                if (err != null) {
+                                                    res.send(err);
                                                 } else {
-                                                    
-                                                db.collection("reservaPuesto")
-                                                    .insertOne({
-                                                        dni: usuario[0].dni,
-                                                        nombre: reserva.nombre,
-                                                        apellido: reserva.apellido,
-                                                    //id: puesto[0].id,
-                                                        id: reserva.id,
-                                                        fecha: fecha
-                                                    }, ((err, data) => { 
+                                                    db.collection("users")
+                                                        .find({ dni: reserva.dni }).toArray((err, datos) => { 
                                                             if (err != null) {
-                                                                res.send(err);
+                                                                res.send(err)
                                                             } else {
                                                                 db.collection("users")
-                                                                    .find({ dni: reserva.dni }).toArray((err, datos) => { 
+                                                                    .updateOne({ dni: reserva.dni }, {
+                                                                        $set: { creditos: datos.creditos - 5 }
+                                                                    }, (err, alta) => {
                                                                         if (err != null) {
-                                                                            res.send(err)
+                                                                            res.send(err);
                                                                         } else {
-                                                                            db.collection("users")
-                                                                                .updateOne({ dni: reserva.dni }, {
-                                                                                    $set: { creditos: datos.creditos - 5 }
-                                                                                }, (err, alta) => {
-                                                                                    if (err != null) {
-                                                                                        res.send(err);
-                                                                                    } else {
-                                                                                        res.send({ error: true, mensaje: "Su puesto se ha reservado", alta:alta });
-                                                                                    }
-                                                                                }
-                                                                            )
+                                                                            res.send({ error: true, mensaje: "Su puesto se ha reservado", alta:alta });
                                                                         }
-                                                                    })
-                                                                }
-                                                            })
-                                                        )
-
-                                                      }
-
+                                                                    }
+                                                                )
+                                                            }
+                                                        })
                                                     }
                                                 })
+                                            )
+                    
 
 
      
