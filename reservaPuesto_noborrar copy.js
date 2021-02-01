@@ -12,11 +12,7 @@ const router = express.Router()
     
 router.post("/add", (req, res) => {
     const fecha = req.body.fecha;
-    const puestos = req.body.puestos;
-    const usuario = req.body.dataUser;
-    console.log(usuario)
-    console.log(puestos)
- 
+   const puestos = req.body.puestos;
 
     let db = req.app.locals.db;
         db.collection("reservaPuesto")
@@ -52,32 +48,10 @@ router.post("/add", (req, res) => {
                     { fecha: fecha },
                     { $set: { puestos: newArray } },
                     (err, infoUpdate) => {
-                        if (err !== null) {
-                            res.send(err);
-                        } else {
-                            db.collection("reservaPuesto").insertOne({
-                                    dni: usuario.dni,
-                                    nombre: usuario.nombre,
-                                    apellido: usuario.apellido
-                                }, ((err, data) => { 
-                                        if (err != null) {
-                                            res.send(err);
-                                        } else {
-                                            db.collection("users")
-                                                .updateOne({ dni: usuario.dni }, {
-                                                    $set: { creditos: data[0].creditos - 5 }
-                                                }, (err, alta) => { 
-                                                    if (err != null) {
-                                                        res.send(err);
-                                                    } else {
-                                                        res.send({ error: true, mensaje: "Su puesto se ha reservado", alta:alta });
-                                                    }    
-                                                })
-                                        }
-                                        
-                                }))
-                        
-                       // res.send(infoUpdate);
+                    if (err !== null) {
+                        res.send(err);
+                    } else {
+                        res.send(infoUpdate);
                     }
                     }
                 );
@@ -88,9 +62,12 @@ router.post("/add", (req, res) => {
 
 
 
-/************************************************/
-/*         MOSTRAR LOS PUESTOS LIBRES           */
-/************************************************/
+
+
+
+        /************************************************/
+        /*         MOSTRAR LOS PUESTOS LIBRES           */
+        /************************************************/
 
     router.get("/", (req, res) => {
         const reserva = req.body

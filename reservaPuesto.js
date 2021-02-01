@@ -8,11 +8,12 @@ const router = express.Router()
 /*******************************************/
 /*          REALIZAR UNA RESERVA          */
 /******************************************/
-
     
 router.post("/add", (req, res) => {
     const fecha = req.body.fecha;
-   const puestos = req.body.puestos;
+    const puestos = req.body.puestos;
+    const usuario = req.body.dataUser;
+    console.log(usuario)
 
     let db = req.app.locals.db;
         db.collection("reservaPuesto")
@@ -43,6 +44,7 @@ router.post("/add", (req, res) => {
                     } else {
                     newArray.push(puestos[i]);
                     }
+                
                 }
                 db.collection("reservaPuesto").updateOne(
                     { fecha: fecha },
@@ -64,31 +66,40 @@ router.post("/add", (req, res) => {
 
 
 
+/************************************************/
+/*         MOSTRAR LOS PUESTOS POR DIA           */
+/************************************************/
 
-        /************************************************/
-        /*         MOSTRAR LOS PUESTOS LIBRES           */
-        /************************************************/
+router.post("/get", (req, res) => {
+    const fecha = req.body.fecha;
+    const puestos = req.body.puestos;
+  
 
-    router.get("/", (req, res) => {
-        const reserva = req.body
-        const fecha = new Date(req.body.fecha)
-
-        let db = req.app.locals.db;
+    let db = req.app.locals.db;
         db.collection("reservaPuesto")
-            .find({ fecha: fecha })
-                .toArray((err, datos) => {
-                if(err!=null) {
-                    console.log(err);
-                    res.send(err);
-                } else {
-                    if (dia.length !== 0) {
-                        res.send({ error: true, mensaje: "El puesto está ocupado" });
-                    } else { 
-                         res.send({ error: true, mensaje: "El puesto está libre" });
-                    }
+            .find({ fecha: fecha }).toArray((err, data) => {
+            console.log(data);
+            if (err !== null) {
+                res.send(err);
+            } else {
+              res.send(data);
                 }
             });
         });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                     
 
