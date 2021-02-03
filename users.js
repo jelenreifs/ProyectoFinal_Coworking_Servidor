@@ -65,28 +65,6 @@ router.post("/add", function(req, res) {
 })
 
 
-/*******************************************/
-/*          REGISTRO: UPDATE USER USER         */
-/******************************************/
-
-/* 
-router.put("/update", function (req, res) {
-  let dni = req.body.dni;
-  let foto = req.body.foto;
-
-    db.collection("users").updateOne(
-      { dni: dni },
-      { $set: { foto: foto } },
-      function (err, datos) {
-        if (err !== null) {
-          res.send(err);
-          } else {
-              res.send(datos);
-          }
-      });
-  });
- */
-
 
 /*******************************************************/
 /*                MODIFICACION USER               */
@@ -140,44 +118,18 @@ console.log(req.body)
 /*******************************************************/
 
 router.delete("/delete", function (req, res) {
-   // const dni = req.params.dni;
     const id = ObjectId(req.body.id)
   
   let db = req.app.locals.db;
    db.collection("users")
-    .deleteOne({ _id: id }, function (err, datos) {
+    .deleteOne({ _id: id },function (err, datos) {
     if (err !== null) {
       res.send(err);
     } else {
-      res.send({ error:false, mensaje: "El usuario se ha dado de baja", datos:datos });
+      res.send({ error: false, mensaje: "El usuario de ha dado de baja", datos:datos });
     }
-  });
+  })
 });
-
-
-
-module.exports = router;
-
-
-
-/*******************************************************/
-/*               ELIMINAR USUARIO              */
-/*******************************************************/
-
-router.get("/usuario/:id", function (req, res) {
-    const id = ObjectId(req.params.id)
-  
-  let db = req.app.locals.db;
-   db.collection("users")
-    .find({ _id: id }).toArray(function (err, datos) {
-    if (err !== null) {
-      res.send(err);
-    } else {
-      res.send({ error:false, datos:datos });
-    }
-  });
-});
-
 
 
 module.exports = router;

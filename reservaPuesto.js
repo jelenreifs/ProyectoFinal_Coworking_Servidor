@@ -12,8 +12,11 @@ const router = express.Router()
 router.post("/add", (req, res) => {
     const fecha = req.body.fecha;
     const puestos = req.body.puestos;
-    const usuario = req.body.dataUser;
-    console.log(usuario)
+    const dni = req.body.usuario.dni;
+    const creditos = req.body.usuario.creditos;
+    const nuevosCreditos = creditos - 5;
+    console.log(nuevosCreditos)
+  
 
     let db = req.app.locals.db;
         db.collection("reservaPuesto")
@@ -28,9 +31,18 @@ router.post("/add", (req, res) => {
                     { fecha: fecha, puestos: puestos },
                     (err, info) => {
                     if (err !== null) {
-                        res.send(err);
+                         res.send({error: true, mensaje: "No se ha realizado la reserva", err: err });
                     } else {
-                        res.send(info);
+                         db.collection("users")
+                            .updateOne({ dni: dni }, {
+                                $set: { creditos: nuevosCreditos }
+                            }, (err, alta) => { 
+                                    if (err != null) {
+                                        res.send({error: true, mensaje: "No se ha realizado la reserva", err: err });
+                                    } else { 
+                                        res.send({ error: false, mensaje: "Su puesto se ha reservado", info:info });
+                                    }
+                            })
                     }
                     }
                 );
@@ -53,7 +65,19 @@ router.post("/add", (req, res) => {
                     if (err !== null) {
                         res.send(err);
                     } else {
-                        res.send(infoUpdate);
+                        //res.send(infoUpdate);
+                        db.collection("users")
+                            .updateOne({ dni: dni }, {
+                                $set: { creditos: nuevosCreditos }
+                            }, (err, alta) => { 
+                                    if (err != null) {
+                                        res.send({error: true, mensaje: "No se ha realizado la reserva", err: err });
+                                    } else { 
+                                        res.send({ error: false, mensaje: "Su puesto se ha reservado", alta:alta });
+
+                                    }
+                            })
+                        
                     }
                     }
                 );
@@ -63,6 +87,23 @@ router.post("/add", (req, res) => {
         });
 
 
+
+/************************************************/
+/*         MOSTRAR TODAS LAS RESERVAS          */
+/************************************************/
+
+router.get("/", (req, res) => {
+    let db = req.app.locals.db;
+        db.collection("reservaPuesto")
+            .find().toArray((err, data) => {
+            if (err !== null) {
+                res.send(err);
+            } else {
+              res.send(data);
+                }
+            });
+        });
+        
 
 
 
