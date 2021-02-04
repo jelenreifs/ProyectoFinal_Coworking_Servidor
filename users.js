@@ -22,6 +22,27 @@ router.get("/", (req, res) => {
 
 
 /*******************************************/
+/*              GET USUARIO ID             */
+/******************************************/
+
+router.get("/usuario/:id", (req, res) => {
+  const id= ObjectId(req.params.id)
+
+
+  let db = req.app.locals.db;
+  db.collection("users")
+    .find({_id:id})
+        .toArray((err, datos) => {
+        if(err!=null) {
+            res.send(err);
+        } else {
+            res.send(datos);
+        }
+    });
+}); 
+
+
+/*******************************************/
 /*          REGISTRO: POST USER           */
 /******************************************/
 
